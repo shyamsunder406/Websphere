@@ -15,7 +15,7 @@ pipeline {
 
     stage('Build WAR') {
       steps {
-        sh 'mkdir -p app && cp index.jsp app/ && jar -cvf app/sample.war -C app/ .'
+        sh 'mkdir -p app && cp app/index.jsp app/ && jar -cvf app/sample.war -C app/ .'
       }
     }
 
