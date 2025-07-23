@@ -1,0 +1,48 @@
+pipeline {
+  agent any
+
+  environment {
+    DOCKER_IMAGE = 'your-dockerhub-user/liberty-app'
+    TAG = 'latest'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        git url: 'https://github.com/your-org/websphere-liberty.git'
+      }
+    }
+
+    stage('Build WAR') {
+      steps {
+        sh 'mkdir -p app && cp index.jsp app/ && jar -cvf app/sample.war -C app/ .'
+      }
+    }
+
+    stage('Build Docker Image') {
+      steps {
+        sh 'docker build -t $DOCKER_IMAGE:$TAG .'
+      }
+    }
+
+    stage('Push Docker Image') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+          sh '''
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+            docker push $DOCKER_IMAGE:$TAG
+          '''
+        }
+      }
+    }
+  }
+
+  post {
+    success {
+      echo "✅ Image pushed successfully: $DOCKER_IMAGE:$TAG"
+    }
+    failure {
+      echo "❌ Build failed"
+    }
+  }
+}

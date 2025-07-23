@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liberty-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: liberty
+  template:
+    metadata:
+      labels:
+        app: liberty
+    spec:
+      containers:
+      - name: liberty
+        image: myrepo/liberty-app:latest
+        ports:
+        - containerPort: 9080

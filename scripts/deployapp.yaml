@@ -1,0 +1,2 @@
+AdminApp.install('/opt/IBM/WebSphere/sample.ear', ['-appname', 'SampleApp', '-server', 'server1'])
+AdminConfig.save()

@@ -1,0 +1,10 @@
+- name: Deploy EAR to WebSphere
+  hosts: was_servers
+  tasks:
+    - name: Copy EAR file
+      copy:
+        src: sample.ear
+        dest: /opt/IBM/WebSphere/sample.ear
+
+    - name: Run wsadmin script
+      shell: "/opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -f /opt/scripts/deployApp.py"
